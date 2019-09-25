@@ -28,20 +28,22 @@ public class TfIdf {
         ResultSet resultSet = dataAccess.getRightUrlIds();
         resultSet.first();
         ResultSet urlWordIdsResultSet;
-        if (resultSet.next()) {
-            do {
-                long urlId = resultSet.getLong("id");
-                urlWordIdsResultSet = dataAccess.getUrlWordIds(urlId);
-                urlWordIdsResultSet.first();
-                if (urlWordIdsResultSet.next()) {
-                    do {
-                        long wordId = urlWordIdsResultSet.getLong("word_id");
-                        tfIdf = TfIdf.getInstance(urlId, wordId);
-                        tfIdf.rank();
-                        System.out.println("new ranking submitted -> url_id: " + urlId + "\nword_id: " + wordId + "\n\n");
-                    } while (urlWordIdsResultSet.next());
-                }
-            } while (resultSet.next());
+        while(true){
+            if (resultSet.next()) {
+                do {
+                    long urlId = resultSet.getLong("id");
+                    urlWordIdsResultSet = dataAccess.getUrlWordIds(urlId);
+                    urlWordIdsResultSet.first();
+                    if (urlWordIdsResultSet.next()) {
+                        do {
+                            long wordId = urlWordIdsResultSet.getLong("word_id");
+                            tfIdf = TfIdf.getInstance(urlId, wordId);
+                            tfIdf.rank();
+                            System.out.println("new ranking submitted -> url_id: " + urlId + "\nword_id: " + wordId + "\n\n");
+                        } while (urlWordIdsResultSet.next());
+                    }
+                } while (resultSet.next());
+            }
         }
     }
 
